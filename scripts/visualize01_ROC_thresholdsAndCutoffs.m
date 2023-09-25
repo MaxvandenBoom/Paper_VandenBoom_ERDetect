@@ -213,17 +213,18 @@ for iMeth = 1:4
         % (reorder the cutoffs accordingly)
         mROCCutOffs = mCutOffs(reIndex);
         
-        % plot std. dev as area
-        sensStd = stdSensMetrics{iMeth};
-        tprs_upper = min(mValues(4, :) + sensStd, 100);
-        tprs_lower = max(mValues(4, :) - sensStd, 0);
-        x2 = [100 - mValues(3, :), fliplr(100 - mValues(3, :))];
-        inBetween = [tprs_upper, fliplr(tprs_lower)];
-        a = fill(x2, inBetween, metricColor, 'LineStyle', 'none');
-        a.FaceAlpha = 0.1;
-        %plot(100 - mValues(3, :), tprs_upper, '-', 'LineWidth', .5, 'DisplayName', strMetricDisplay, 'Color', [1 0 0]);
-        %plot(100 - mValues(3, :), tprs_lower, '-', 'LineWidth', .5, 'DisplayName', strMetricDisplay, 'Color', [1 0 0]);
-
+        if iMeth == 2 || iMeth == 3
+            % plot std. dev as area
+            sensStd = stdSensMetrics{iMeth};
+            tprs_upper = min(mValues(4, :) + sensStd, 100);
+            tprs_lower = max(mValues(4, :) - sensStd, 0);
+            x2 = [100 - mValues(3, :), fliplr(100 - mValues(3, :))];
+            inBetween = [tprs_upper, fliplr(tprs_lower)];
+            a = fill(x2, inBetween, metricColor, 'LineStyle', 'none');
+            a.FaceAlpha = 0.1;
+            %plot(100 - mValues(3, :), tprs_upper, '-', 'LineWidth', .5, 'DisplayName', strMetricDisplay, 'Color', [1 0 0]);
+            %plot(100 - mValues(3, :), tprs_lower, '-', 'LineWidth', .5, 'DisplayName', strMetricDisplay, 'Color', [1 0 0]);
+        end
         
         %
         mValues(3, 1) = 0;
