@@ -198,3 +198,7 @@ ylim([0 1]);
 xlim([.5 6]);
 set(gcf,'color', 'w');
 
+%{
+set(gcf, 'renderer', 'painters');
+saveas(gcf, 'D:\erdetect_output\fig_scatter.eps', 'epsc');
+%}

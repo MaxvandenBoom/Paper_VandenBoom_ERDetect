@@ -158,7 +158,7 @@ for iMeth = 1:3
     
     %{
     set(gcf, 'renderer', 'painters');
-    saveas(gcf, ['~/fig_ROC_M', num2str(iMetric), '.eps'], 'epsc');
+    saveas(gcf, ['D:\erdetect_output\fig_ROC_M', num2str(iMetric), '.eps'], 'epsc');
     %}
     
 end
@@ -293,6 +293,6 @@ set(gcf,'color', 'w');
 
 %{
 set(gcf, 'renderer', 'painters');
-saveas(gcf, '~/fig_ROCS.eps', 'epsc');
+saveas(gcf, 'D:\erdetect_output\fig_ROCS.eps', 'epsc');
 %}
 
