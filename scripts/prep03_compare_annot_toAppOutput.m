@@ -137,7 +137,7 @@ allSubjects_results_table.sub =  bids_sets(:, 1);
 %%
 %  Calculate averages over subjects
 
-allSubjects_results_average = mean(allSubjects_results, 1);
+allSubjects_results_average = mean(allSubjects_results, 1);   %[score, retKappa.k, spec, sens, retKrip]
 
 clear bids_projectPath
 return;
