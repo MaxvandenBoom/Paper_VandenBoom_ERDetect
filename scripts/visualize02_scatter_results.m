@@ -168,7 +168,7 @@ for iMeth = 0:3
     
     
     if iMeth == 0
-        values = interRater_results(:, 5);
+        values = interRater_results(:, 2);
         %plot(ones(1, numel(values)) * iMeth + 1, values, 'x', 'DisplayName', strMetricDisplay, 'LineWidth', 2);
         plot(ones(1, numel(values)) * iMeth + 1, values, 'x', 'DisplayName', strMetricDisplay, 'LineWidth', 2, 'Color', metricColor);
     else
