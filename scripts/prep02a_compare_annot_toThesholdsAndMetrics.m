@@ -3,7 +3,8 @@
 %   annotations to the output of the App-test (test specifically designed to try different thresholds)
 %
 
-addpath('./functions');
+addpath('../functions');
+addpath('../external');
 
 
 %%

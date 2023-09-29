@@ -2,8 +2,8 @@
 % Calculate the inter-rater reliability metrics and annotation descriptives
 %
 
-addpath('./functions');
-addpath('./external');
+addpath('../functions');
+addpath('../external');
 
 
 %%

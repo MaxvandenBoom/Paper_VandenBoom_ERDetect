@@ -2,7 +2,8 @@
 %   Validate the detection methods by comparing the visual-manual annotations to the App detection output
 %
 
-addpath('./functions');
+addpath('../functions');
+addpath('../external');
 
 
 %%
