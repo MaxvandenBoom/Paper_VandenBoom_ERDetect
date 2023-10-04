@@ -54,7 +54,7 @@ clear uniqueIDs
 %%
 %
 
-interRater_results = [];               % <inter-rater dataset> x [score, retKappa.k, spec, sens, retKrip]
+interRater_results = [];               % <inter-rater dataset> x [acc, retKappa.k, spec, sens, prec, retKrip]
 interRater_annotDescr_IDs = {};
 interRater_annotDescr = [];            % <inter-rater dataset> x [total, ER, NonER, ER_perc, NonER_perc]
 
@@ -276,17 +276,19 @@ for iSet = 1:size(compareSets, 1)
     %%
     %  Percentages and cohen's kappa
 
-    [score, spec, sens, retKappa, agreeMats, retKrip, swapSpec, swapSens] = ccep_compareN1Matrices(annot_l(:,1), annot_l(:,2));
-    disp(['- Perc agreement match: ', num2str(round(score))]);
-    disp(['- Perc agreement sens (true pos): ', num2str(round(sens))]);
-    disp(['- Perc agreement sens (true pos), swapped mat: ', num2str(round(swapSens))]);
-    disp(['- Perc agreement spec (true neg): ', num2str(round(spec))]);
-    disp(['- Perc agreement spec (true neg): swap matrices: ', num2str(round(swapSpec))]);
+    [acc, spec, sens, prec, retKappa, agreeMats, retKrip, swapSpec, swapSens, swapPrec] = ccep_compareN1Matrices(annot_l(:,1), annot_l(:,2));
+    disp(['- Perc agreement match: ', num2str(round(acc))]);
+    disp(['- Sensitivity (true pos rate): ', num2str(round(sens))]);
+    disp(['- Sensitivity (true pos rate), swap matrices: ', num2str(round(swapSens))]);
+    disp(['- Specificity (true neg rate): ', num2str(round(spec))]);
+    disp(['- Specificity (true neg rate), swap matrices: ', num2str(round(swapSpec))]);
+    disp(['- Precision: ', num2str(round(prec))]);
+	disp(['- Precision, swap matrices: ', num2str(round(swapPrec))]);
     disp(['- Cohens kappa: ', num2str(round(retKappa.k, 2)), '      (', num2str(retKappa.k), ')']);
     disp(['- Krippendorff (kriAlpha function) alpha:   ', num2str(round(retKrip, 2)), '      (', num2str(retKappa.k), ')']);
     
     % store
-    interRater_results(end + 1, :) = [score, retKappa.k, spec, sens, retKrip];
+    interRater_results(end + 1, :) = [acc, retKappa.k, spec, sens, prec, retKrip];
     
     
     %{
@@ -328,13 +330,13 @@ for iSet = 1:size(compareSets, 1)
     clear annot_l annot1 annot2 annot_l_nonans annot_app
     clear mis_annot1 mis_annot2 mis_channelNames mis_stimpairNames chan_mismatch stimpair_mismatch
     clear k varTotal sumVarAnnot c_alpha
-    clear score spec sens retKappa agreeMats retKrip swapSpec swapSens
+    clear acc spec sens prec retKappa agreeMats retKrip swapSpec swapSens swapPrec
 end
 clear iSet
 clear bids_channelsPath bids_electrodesPath bids_eventsPath bids_appDetect_annotPath
 
 % calculate totals and averages 
-interRater_results_averages = mean(interRater_results, 1);          %[score, retKappa.k, spec, sens, retKrip]
+interRater_results_averages    = mean(interRater_results, 1);          %[acc, retKappa.k, spec, sens, prec, retKrip]
 interRater_annotDescr_averages = mean(interRater_annotDescr, 1);    %[total, ER, NonER, ER_perc, NonER_perc]
 interRater_annotDescr_totals   = sum(interRater_annotDescr, 1);     %[total, ER, NonER, ER_perc, NonER_perc]
 

@@ -17,7 +17,7 @@
 %   Returns: 
 %       outMatrix               = The metric-values <channels x stimpairs>
 %       metric_cutoff_results   = The results of the comparison between the manual/visual annotations and the
-%                                 metric annotations (by different cutoff values), format: [score, kappa, spec, sens] x cuttoffs
+%                                 metric annotations (by different cutoff values), format: [acc, kappa, spec, sens] x cuttoffs
 %       cutoff_YoudenJ          = The Youden-index for each of the cutoff values
 %       cutoff_DVal             = The D-value for each of the cutoff values
 %
@@ -90,7 +90,7 @@ function [outMatrix, metric_cutoff_results, cutoff_YoudenJ, cutoff_DVal] = ccep_
             % assume the metric values are p-values, use bonferonni significance threshold
 
             % cross projections (single)
-            metric_cutoff_results = nan(4, 1);     % <class/kappa/spec/sens>
+            metric_cutoff_results = nan(5, 1);     % <acc/kappa/spec/sens/prec>
 
             % annotate by threshold 
             metric_annotations = double(outMatrix < (.05 / numel(outMatrix)));
@@ -101,11 +101,12 @@ function [outMatrix, metric_cutoff_results, cutoff_YoudenJ, cutoff_DVal] = ccep_
 
             % store matching results of this cutoff
             % Note: the function will exclude values that are nans (un-annotated) from both inputs
-            [score, spec, sens, retKappa, agreeMats] = ccep_compareN1Matrices(manualStruct.annotations, metric_annotations);
-            metric_cutoff_results(1, 1) = score;
+            [acc, spec, sens, prec, retKappa, agreeMats] = ccep_compareN1Matrices(manualStruct.annotations, metric_annotations);
+            metric_cutoff_results(1, 1) = acc;
             metric_cutoff_results(2, 1) = retKappa.k;
             metric_cutoff_results(3, 1) = spec;
             metric_cutoff_results(4, 1) = sens;
+			metric_cutoff_results(5, 1) = prec;
 
         else    
 
@@ -113,8 +114,8 @@ function [outMatrix, metric_cutoff_results, cutoff_YoudenJ, cutoff_DVal] = ccep_
             cutoff_YoudenJ      = nan(1, length(cutoffs));
             cutoff_DVal         = nan(1, length(cutoffs));
 
-            % variable to store the comparison results for the different metric cutoffs (<class/kappa/spec/sens> x <cutoffs>)
-            metric_cutoff_results = nan(4, length(cutoffs));
+            % variable to store the comparison results for the different metric cutoffs (<acc/kappa/spec/sens/prec> x <cutoffs>)
+            metric_cutoff_results = nan(5, length(cutoffs));
 
             % loop over the different cutoffs
             for iCuttoff = 1:length(cutoffs)
@@ -124,11 +125,12 @@ function [outMatrix, metric_cutoff_results, cutoff_YoudenJ, cutoff_DVal] = ccep_
                 metric_annotations(isnan(outMatrix)) = nan;
 
                 % store annotation comparison results for this cutoff
-                [score, spec, sens, retKappa, agreeMats] = ccep_compareN1Matrices(manualStruct.annotations, metric_annotations);
-                metric_cutoff_results(1, iCuttoff) = score;
+                [acc, spec, sens, prec, retKappa, agreeMats] = ccep_compareN1Matrices(manualStruct.annotations, metric_annotations);
+                metric_cutoff_results(1, iCuttoff) = acc;
                 metric_cutoff_results(2, iCuttoff) = retKappa.k;
                 metric_cutoff_results(3, iCuttoff) = spec;
                 metric_cutoff_results(4, iCuttoff) = sens;
+				metric_cutoff_results(5, iCuttoff) = prec;
 
                 % store younden-index of this cutoff
                 cutoff_YoudenJ(iCuttoff) = spec + sens - 1;

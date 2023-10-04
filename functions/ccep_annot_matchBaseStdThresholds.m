@@ -14,7 +14,7 @@
 %   Returns: 
 %       thresholds              = The different baseline thresholds that were found in the test-struct
 %       threshold_results       = The results of the comparison between the manual/visual annotations and the test
-%                                 annotations (at different threshold values), format: [score, kappa, spec, sns] x thresholds
+%                                 annotations (at different threshold values), format: [acc, kappa, spec, sens, spec] x thresholds
 %       cutoff_YoudenJ          = The Youden-index for each of the threshold values
 %       cutoff_DVal             = The D-value for each of the threshold values
 %
@@ -92,8 +92,8 @@ function [thresholds, threshold_results, threshold_YoudenJ, threshold_DVal] = cc
     threshold_YoudenJ      = nan(1, length(thresholds));
     threshold_DVal         = nan(1, length(thresholds));
 
-    % variable to store the comparison results for the different metric cutoffs (<class/kappa/spec/sens> x <cutoffs>)
-    threshold_results = nan(4, length(thresholds));
+    % variable to store the comparison results for the different metric cutoffs (<acc/kappa/spec/sens/prec> x <cutoffs>)
+    threshold_results = nan(5, length(thresholds));
 
     %    
     for iThresh = 1:length(thresholds)
@@ -111,11 +111,12 @@ function [thresholds, threshold_results, threshold_YoudenJ, threshold_DVal] = cc
         
         % store annotation comparison for this threshold
         % Note: the function will exclude values that are nans (un-annotated) from both inputs
-        [score, spec, sens, retKappa, agreeMats] = ccep_compareN1Matrices(manualStruct.annotations, matched_annotations);
-        threshold_results(1, iThresh) = score;
+        [acc, spec, sens, prec, retKappa, agreeMats] = ccep_compareN1Matrices(manualStruct.annotations, matched_annotations);
+        threshold_results(1, iThresh) = acc;
         threshold_results(2, iThresh) = retKappa.k;
         threshold_results(3, iThresh) = spec;
         threshold_results(4, iThresh) = sens;
+		threshold_results(5, iThresh) = prec;
 
         % store younden-index of this cutoff
         threshold_YoudenJ(iThresh) = spec + sens - 1;

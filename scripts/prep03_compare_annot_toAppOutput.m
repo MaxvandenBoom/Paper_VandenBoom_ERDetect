@@ -53,7 +53,7 @@ bids_sets           = { 'UMCU20_DvB',  'UMCU20', {'LH'}, '1',       'SPESclin', 
 %%
 %
 
-allSubjects_results = [];               % <annot dataset> x [score, retKappa.k, spec, sens, retKrip]
+allSubjects_results = [];               % <annot dataset> x [acc, retKappa.k, spec, sens, prec, retKrip]
 for iSet = 1:size(bids_sets, 1)
     
     %
@@ -118,27 +118,27 @@ for iSet = 1:size(bids_sets, 1)
     end
     clear chan_mismatch stimpair_mismatch
     
-    % compare the N1 matrices
-    [score, spec, sens, retKappa, agreeMats, retKrip] = ccep_compareN1Matrices(manualStruct.annotations, appStruct.annotations);
-    disp(['Visual - N1Detect: ', num2str(score), '%     - kappa: ', num2str(retKappa.k), '%     - krip: ', num2str(retKrip), '%     - spec: ', num2str(spec), '%     - sens: ', num2str(sens)]);
+    % compare the ER matrices
+    [acc, spec, sens, prec, retKappa, agreeMats, retKrip] = ccep_compareN1Matrices(manualStruct.annotations, appStruct.annotations);
+    disp(['Visual - ERDetect: ', num2str(acc), '%     - kappa: ', num2str(retKappa.k), '%     - krip: ', num2str(retKrip), '%     - spec: ', num2str(spec), '%     - sens: ', num2str(sens), '%     - prec: ', num2str(prec)]);
 
     % concatenate
-    allSubjects_results(end + 1, :) = [score, retKappa.k, spec, sens, retKrip];
+    allSubjects_results(end + 1, :) = [acc, retKappa.k, spec, sens, prec, retKrip];
     
-    clear score spec sens retKappa agreeMats retKrip
+    clear acc spec sens prec retKappa agreeMats retKrip
 end
 clear iSet manualStruct appStruct
 clear bids_manual_annotPath bids_appDetect_annotPath bids_channelsPath bids_electrodesPath
 
 % transfer to a table for easy reading
-allSubjects_results_table = array2table(allSubjects_results, 'VariableNames', {'agr perc', 'kappa', 'spec', 'sens', 'krip'});
+allSubjects_results_table = array2table(allSubjects_results, 'VariableNames', {'agr perc', 'kappa', 'spec', 'sens', 'prec', 'krip'});
 allSubjects_results_table.sub =  bids_sets(:, 1);
 
 
 %%
 %  Calculate averages over subjects
 
-allSubjects_results_average = mean(allSubjects_results, 1);   %[score, retKappa.k, spec, sens, retKrip]
+allSubjects_results_average = mean(allSubjects_results, 1);   %[acc, retKappa.k, spec, sens, prec, retKrip]
 
 clear bids_projectPath
 return;
