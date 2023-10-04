@@ -272,3 +272,111 @@ set(gcf, 'renderer', 'painters');
 saveas(gcf, 'D:\erdetect_output\fig5_ROCS.eps', 'epsc');
 %}
 
+
+
+%%
+%  Average Precision/Recall plot (y = precision vs x = recall/sensitivity)
+
+% open a plot
+f = figure('Position', [0, 0, 1400, 900]);
+hold on;
+
+% loop through the detection metrics
+for iMeth = 1:4
+
+    % 
+    strMetric = '';
+    metricColor = [0 0 0];
+    strMetricDisplay = '';
+    switch iMeth
+        case 1, strMetric = 'stdB';  strMetricDisplay = 'Dev. from baseline'; ...
+                strTestType = 'threshold'; metricColor = [0.4667, 0.6745, 0.1882];
+        case 2, strMetric = 'w15';  strMetricDisplay = 'Wavelet'; ...
+                strTestType = 'cutoff'; metricColor = [0    0.4471    0.7412];
+        case 3, strMetric = 'cpt';  strMetricDisplay = 'Inter-trial similiary'; ...
+                strTestType = 'cutoff'; metricColor = [0.9294    0.6941    0.1255];
+        case 4, strMetric = 'cp';   strMetricDisplay = 'Inter-trial similiary (p_b_o_n_f < .05)'; ...
+                metricColor = [0.9294    0.6941    0.1255];
+    end
+
+    %
+    if iMeth == 4
+        % 
+        
+        mValues = allSubjects_threshAndMetr_averages.(['mutual_', strMetric, '_comp']);
+        plot(mValues(4), mValues(5), 'diamond', 'LineWidth', 1.5, 'DisplayName', strMetricDisplay, 'Color', metricColor, 'MarkerSize', 9, 'MarkerFaceColor', metricColor);
+
+    else
+        % 
+        
+        mValues = allSubjects_threshAndMetr_averages.(['mutual_', strMetric, '_comp']);
+        mCutOffs = allSubjects_threshAndMetr_averages.([strMetric, '_', strTestType, 's']);
+        mCutOffYouden = allSubjects_threshAndMetr_averages.([strMetric, '_', strTestType, '_YoudenJ']);
+        mCutOffDVal = allSubjects_threshAndMetr_averages.([strMetric, '_', strTestType, '_DVal']);
+        
+        %
+        %mValues = [nan(size(mValues, 1), 1), mValues, nan(size(mValues, 1), 1)];
+        %mValues(5, 1) = 0;
+        %mValues(5, end) = 100;
+        %mValues(4, 1) = 100;
+        %mValues(4, end) = 0;
+        
+        % plot the ROC points
+        plot(mValues(4, :), mValues(5, :), '-', 'LineWidth', 1.5, 'DisplayName', strMetricDisplay, 'Color', metricColor);
+
+        
+        %
+        % Mark optimum cutoffs
+        %
+        
+        % find the optimal index
+        [~, opt_cutoff_idx] = max(mCutOffYouden);
+        %[~, opt_cutoff_idx] = min(mCutOffDVal);
+
+        % print 
+        disp([strMetricDisplay, ' optimum = ', num2str(mCutOffs(opt_cutoff_idx))]);
+
+        strMetricOptimumDisplay = [strMetricDisplay, ' - Youden optimum'];
+        if iMeth == 4
+            metricColor = [0.9294    0.5941    0.2755];
+        end
+
+        % plot the optimum
+        plot(mValues(4, opt_cutoff_idx), mValues(5, opt_cutoff_idx), 'square', 'LineWidth', 1.5, 'DisplayName', strMetricOptimumDisplay, 'Color', metricColor, 'MarkerSize', 12, 'MarkerFaceColor', metricColor);
+        
+    end
+
+end
+
+
+% draw the sens & spec of the current appp output results (baseline 3.4)
+plot(allSubjects_results_average(4), allSubjects_results_average(5), 'o', ...
+     'LineWidth', 1.5, 'DisplayName', 'Current default (base 3.4)', 'Color', [0 .6 0], 'MarkerSize', 10, 'MarkerFaceColor', [0 .6 0]);
+
+% draw the average sens & spec of the inter-rater
+plot(interRater_results_averages(4), interRater_results_averages(5), 'o', ...
+     'LineWidth', 1.5, 'DisplayName', 'Inter-rater average', 'Color', [0.6353, 0.0784, 0.1843], 'MarkerSize', 10, 'MarkerFaceColor', [0.6353, 0.0784, 0.1843]);
+
+% stop drawing
+hold off;
+
+
+ax = gca;
+ax.FontSize = 16; 
+
+
+xlabel('Recall', 'FontSize', 24)
+ylabel('Precision', 'FontSize', 24)
+set(gca,'Xtick', 0:25:100);
+set(gca,'Ytick', 0:25:100);
+xlim([0 100]);
+ylim([0 100]);
+
+pbaspect([1 1 1]);
+legend('Location', 'southeast');
+set(gcf,'color', 'w');
+
+%{
+set(gcf, 'renderer', 'painters');
+saveas(gcf, 'D:\erdetect_output\fig5_PR.eps', 'epsc');
+%}
