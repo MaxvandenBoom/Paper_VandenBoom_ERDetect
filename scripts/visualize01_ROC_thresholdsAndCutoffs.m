@@ -32,7 +32,6 @@ for iMeth = 1:3
     f = figure('Position', [0, 0, 1400, 900]);
     hold on;
     
-    
 
     
     %
@@ -48,12 +47,6 @@ for iMeth = 1:3
         mCutOffYouden = allSubjects_threshAndMetr{iSubj}.([strMetric, '_', strTestType, '_YoudenJ']);
         mCutOffDVal = allSubjects_threshAndMetr{iSubj}.([strMetric, '_', strTestType, '_DVal']);
 
-        % order first by sensitivity (first column) and then by specificity (second column)
-        %[mROCValues, reIndex] = sortrows(flip(mValues(3:4, :), 1)', 'ascend');
-        %[mROCValues, reIndex] = sortrows(flip(mValues(3:4, :), 1)', [2 1]);
-        % (reorder the cutoffs accordingly)
-        %mROCCutOffs = mCutOffs(reIndex);
-
         % plot the ROC points
         plot(100 - mValues(3, :), mValues(4, :), '-', 'LineWidth', 1.5, 'DisplayName', strMetricDisplay, 'Color', metricColor);
 
@@ -62,15 +55,10 @@ for iMeth = 1:3
         %plot(b(:, 1), b(:, 2), '-', 'LineWidth', 1.5, 'DisplayName', strMetricDisplay, 'Color', metricColor);
         mAllSensValues(end + 1, :) = mValues(4, :);
 
+
         %
         % Mark optimum cutoffs
         %
-
-        %
-        %a = interp1(100 - mValues(3, :), mValues(4, :), linspace(0, 1, 100));
-        %tprs(iSubj, :) = a;
-        %%tprs.append(interp(, fpr, tpr))
-
 
         % find the optimal index
         [~, opt_cutoff_idx] = max(mCutOffYouden);
@@ -81,7 +69,6 @@ for iMeth = 1:3
         % plot the optimum
         plot(100 - mValues(3, opt_cutoff_idx), mValues(4, opt_cutoff_idx), '^', 'LineWidth', 1.5, 'DisplayName', strMetricOptimumDisplay, 'Color', metricColor, 'MarkerSize', 9, 'MarkerFaceColor', metricColor);            
         text(100 - mValues(3, opt_cutoff_idx), mValues(4, opt_cutoff_idx), num2str(mCutOffs(opt_cutoff_idx)));
-
         
         
         %
@@ -102,12 +89,6 @@ for iMeth = 1:3
     mCutOffYouden = allSubjects_threshAndMetr_averages.([strMetric, '_', strTestType, '_YoudenJ']);
     mCutOffDVal = allSubjects_threshAndMetr_averages.([strMetric, '_', strTestType, '_DVal']);
     
-    % order first by sensitivity (first column) and then by specificity (second column)
-    %[mROCValues, reIndex] = sortrows(flip(mValues(3:4, :), 1)', 'ascend');
-    %[mROCValues, reIndex] = sortrows(flip(mValues(3:4, :), 1)', [2 1]);
-    % (reorder the cutoffs accordingly)
-    %mROCCutOffs = mCutOffs(reIndex);
-
     % calculate std, and a upper and lower of 2 * std
     sensStd = std(mAllSensValues, 1);
     stdSensMetrics{iMeth} = sensStd;
@@ -150,15 +131,15 @@ for iMeth = 1:3
     ylabel('sensitivity (true positive rate)')
     set(gca,'Xtick', 0:50:100);
     set(gca,'Ytick', 0:50:100);
-    %xlim([0 100]);
-    %ylim([0 100]);
+    xlim([0 100]);
+    ylim([0 100]);
 
     pbaspect([1 1 1]);
     set(gcf,'color', 'w');
     
     %{
     set(gcf, 'renderer', 'painters');
-    saveas(gcf, ['D:\erdetect_output\fig_ROC_M', num2str(iMetric), '.eps'], 'epsc');
+    saveas(gcf, ['D:\erdetect_output\fig5_ROC_M', strMetric, '.eps'], 'epsc');
     %}
     
 end
@@ -167,7 +148,7 @@ end
 
 
 %%
-%  Average ROC curve (y=sensitivity vs x=100-specificity) for each metric
+%  Average ROC plot (y=sensitivity vs x=100-specificity)
 
 
 % open a plot
@@ -207,12 +188,6 @@ for iMeth = 1:4
         mCutOffYouden = allSubjects_threshAndMetr_averages.([strMetric, '_', strTestType, '_YoudenJ']);
         mCutOffDVal = allSubjects_threshAndMetr_averages.([strMetric, '_', strTestType, '_DVal']);
         
-        % order first by sensitivity (first column) and then by specificity (second column)
-        %[mROCValues, reIndex] = sortrows(flip(mValues(3:4, :), 1)', 'ascend');
-        [mROCValues, reIndex] = sortrows(flip(mValues(3:4, :), 1)', [2 1]);
-        % (reorder the cutoffs accordingly)
-        mROCCutOffs = mCutOffs(reIndex);
-        
         if iMeth == 2 || iMeth == 3
             % plot std. dev as area
             sensStd = stdSensMetrics{iMeth};
@@ -227,6 +202,7 @@ for iMeth = 1:4
         end
         
         %
+        mValues = [nan(size(mValues, 1), 1), mValues, nan(size(mValues, 1), 1)];
         mValues(3, 1) = 0;
         mValues(3, end) = 100;
         mValues(4, 1) = 100;
@@ -284,8 +260,8 @@ xlabel('100 - specificity (false positive rate)', 'FontSize', 24)
 ylabel('sensitivity (true positive rate)', 'FontSize', 24)
 set(gca,'Xtick', 0:25:100);
 set(gca,'Ytick', 0:25:100);
-%xlim([0 100]);
-%ylim([0 100]);
+xlim([0 100]);
+ylim([0 100]);
 
 pbaspect([1 1 1]);
 legend('Location', 'southeast');
@@ -293,6 +269,6 @@ set(gcf,'color', 'w');
 
 %{
 set(gcf, 'renderer', 'painters');
-saveas(gcf, 'D:\erdetect_output\fig_ROCS.eps', 'epsc');
+saveas(gcf, 'D:\erdetect_output\fig5_ROCS.eps', 'epsc');
 %}
 
