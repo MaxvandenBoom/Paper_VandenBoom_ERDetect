@@ -288,7 +288,10 @@ for iSet = 1:size(compareSets, 1)
     disp(['- Krippendorff (kriAlpha function) alpha:   ', num2str(round(retKrip, 2)), '      (', num2str(retKappa.k), ')']);
     
     % store
-    interRater_results(end + 1, :) = [acc, retKappa.k, spec, sens, prec, retKrip];
+    interRater_results(end + 1, :) = [acc, retKappa.k, spec,     sens,     prec,     retKrip];
+    interRater_results(end + 1, :) = [NaN, NaN,        swapSpec, swapSens, swapPrec, NaN];
+    
+    
     
     
     %{
@@ -336,9 +339,9 @@ clear iSet
 clear bids_channelsPath bids_electrodesPath bids_eventsPath bids_appDetect_annotPath
 
 % calculate totals and averages 
-interRater_results_averages    = mean(interRater_results, 1);          %[acc, retKappa.k, spec, sens, prec, retKrip]
-interRater_annotDescr_averages = mean(interRater_annotDescr, 1);    %[total, ER, NonER, ER_perc, NonER_perc]
-interRater_annotDescr_totals   = sum(interRater_annotDescr, 1);     %[total, ER, NonER, ER_perc, NonER_perc]
+interRater_results_averages    = nanmean(interRater_results, 1);       % means  [acc, retKappa.k, spec, sens, prec, retKrip]
+interRater_annotDescr_averages = nanmean(interRater_annotDescr, 1);    % means  [acc, ER, NonER, ER_perc, NonER_perc]
+interRater_annotDescr_totals   = nansum(interRater_annotDescr, 1);     % totals [acc, ER, NonER, ER_perc, NonER_perc]
 
 clear bids_projectPath
 return
